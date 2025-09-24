@@ -1,0 +1,125 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  dockerRegistryServiceConnection: 'docker-service-connection'   # Azure DevOps Docker service connection name
+  imageRepository: 'myapp'
+  containerRegistry: 'myregistry.azurecr.io'   # Replace with your ACR/Docker Hub registry
+  dockerfilePath: 'Dockerfile'
+  tag: '$(Build.BuildId)'
+
+stages:
+  # =========================
+  # 1. Build & Test with Maven
+  # =========================
+  - stage: Build
+    displayName: "Build and Test"
+    jobs:
+      - job: MavenBuild
+        displayName: "Maven Compile & Test"
+        steps:
+          - task: Maven@4
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'clean compile test'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/*.xml'
+
+  # =========================
+  # 2. SonarQube Analysis
+  # =========================
+  - stage: SonarQube
+    displayName: "Code Quality Scan"
+    jobs:
+      - job: SonarScan
+        displayName: "SonarQube Analysis"
+        steps:
+          - task: SonarQubePrepare@5
+            inputs:
+              SonarQube: 'SonarQubeServiceConnection'   # Service connection in Azure DevOps
+              scannerMode: 'Other'
+              configMode: 'manual'
+              extraProperties: |
+                sonar.projectKey=myapp
+                sonar.projectName=myapp
+          - task: Maven@4
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'verify sonar:sonar'
+          - task: SonarQubePublish@5
+            inputs:
+              pollingTimeoutSec: '300'
+
+  # =========================
+  # 3. Dependency-Check (OWASP)
+  # =========================
+  - stage: DependencyCheck
+    displayName: "Dependency Vulnerability Check"
+    jobs:
+      - job: DepCheck
+        displayName: "OWASP Dependency-Check"
+        steps:
+          - script: |
+              curl -L https://github.com/jeremylong/DependencyCheck/releases/download/v9.0.8/dependency-check-9.0.8-release.zip -o depcheck.zip
+              unzip depcheck.zip -d depcheck
+              ./depcheck/dependency-check/bin/dependency-check.sh --project "MyApp" --scan .
+            displayName: "Run OWASP Dependency-Check"
+
+  # =========================
+  # 4. Build & Push Docker Image
+  # =========================
+  - stage: DockerBuild
+    displayName: "Build & Push Docker Image"
+    dependsOn: DependencyCheck
+    jobs:
+      - job: Docker
+        steps:
+          - task: Docker@2
+            inputs:
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+              repository: '$(imageRepository)'
+              command: 'buildAndPush'
+              Dockerfile: '$(dockerfilePath)'
+              tags: |
+                $(tag)
+
+  # =========================
+  # 5. Trivy Scan
+  # =========================
+  - stage: Trivy
+    displayName: "Trivy Vulnerability Scan"
+    dependsOn: DockerBuild
+    jobs:
+      - job: Scan
+        steps:
+          - script: |
+              curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+              ./trivy image $(containerRegistry)/$(imageRepository):$(tag) --exit-code 1 --severity HIGH,CRITICAL
+            displayName: "Run Trivy Scan"
+
+  # =========================
+  # 6. Deploy
+  # =========================
+  - stage: Deploy
+    displayName: "Deploy Application"
+    dependsOn: Trivy
+    condition: succeeded()
+    jobs:
+      - job: DeployApp
+        steps:
+          - script: |
+              echo "Deploying container image..."
+              # Example: Using kubectl or helm
+              # kubectl set image deployment/myapp myapp=$(containerRegistry)/$(imageRepository):$(tag)
+            displayName: "Deploy to Kubernetes/Container Service"
