@@ -55,7 +55,7 @@ stages:
                 sonar.projectName=myapp
           - task: Maven@4
             inputs:
-              mavenPomFile: 'pom.xml'
+              mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
               goals: 'verify sonar:sonar'
           - task: SonarQubePublish@5
             inputs:
