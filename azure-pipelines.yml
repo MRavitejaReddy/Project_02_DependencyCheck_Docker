@@ -31,7 +31,7 @@ stages:
         steps:
           - task: Maven@4
             inputs:
-              mavenPomFile: 'pom.xml'
+              mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
               goals: 'clean compile test'
               publishJUnitResults: true
               testResultsFiles: '**/surefire-reports/*.xml'
