@@ -49,7 +49,7 @@ stages:
             inputs:
               SonarQube: 'SonarQubeServiceConnection'   # Service connection in Azure DevOps
               scannerMode: 'Other'
-              configMode: 'manual'
+              configMode: 'CLI'
               extraProperties: |
                 sonar.projectKey=myapp
                 sonar.projectName=myapp
