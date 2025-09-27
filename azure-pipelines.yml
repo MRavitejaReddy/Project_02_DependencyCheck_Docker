@@ -48,14 +48,11 @@ stages:
           - task: SonarQubePrepare@5
             inputs:
               SonarQube: 'SonarQubeServiceConnection'   # Service connection in Azure DevOps
-              scannerMode: 'CLI'
+              scannerMode: 'Other'
               configMode: 'manual'
-              # extraProperties: |
-              #   sonar.projectKey=myapp
-              #   sonar.projectName=myapp
-              cliProjectKey: 'myapp'                     # ✅ Required for CLI mode
-              cliProjectName: 'myapp'                    # Optional but recommended
-              cliSources: 'java-cicd-project/spring-boot-app'
+              extraProperties: |
+                sonar.projectKey=myapp
+                sonar.projectName=myapp
           - task: Maven@4
             inputs:
               mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
