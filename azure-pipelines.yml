@@ -34,8 +34,8 @@ stages:
               mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
               goals: 'clean compile test'
               publishJUnitResults: true
-              # testResultsFiles: '**/surefire-reports/*.xml'
-              testResultsFiles: 'java-cicd-project/spring-boot-app/target/surefire-reports/*.xml'
+              testResultsFiles: '**/surefire-reports/*.xml'
+              # testResultsFiles: 'java-cicd-project/spring-boot-app/target/surefire-reports/*.xml'
 
   # =========================
   # 2. SonarQube Analysis
