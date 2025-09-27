@@ -54,7 +54,6 @@ stages:
               extraProperties: |
                 sonar.projectKey=myapp
                 sonar.projectName=myapp
-                sonar.branch.name=   # ← empty disables branch analysis
           - task: Maven@4
             inputs:
               mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
