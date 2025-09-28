@@ -87,6 +87,7 @@ stages:
             displayName: "Run OWASP Dependency-Check"
           - script: |
               echo "Running Dependency-Check..."
+              mkdir -p dependency-check-report
               ./depcheck/dependency-check/bin/dependency-check.sh \
               --project "MyApp" \
               --scan . \
