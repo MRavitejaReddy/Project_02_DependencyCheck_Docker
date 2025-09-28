@@ -92,6 +92,7 @@ stages:
               --scan . \
               --format "ALL" \
               --out dependency-check-report
+              --disableAssembly
             displayName: "Run OWASP Dependency-Check"
 
           - task: PublishBuildArtifacts@1
