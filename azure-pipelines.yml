@@ -34,8 +34,8 @@ stages:
               mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
               goals: 'clean compile test'
               publishJUnitResults: true
-              testResultsFiles: '**/surefire-reports/*.xml'
-              # testResultsFiles: 'java-cicd-project/spring-boot-app/target/surefire-reports/*.xml'
+              # testResultsFiles: '**/surefire-reports/*.xml'
+              testResultsFiles: 'java-cicd-project/spring-boot-app/target/surefire-reports/*.xml'
 
   # =========================
   # 2. SonarQube Analysis
@@ -54,6 +54,9 @@ stages:
               extraProperties: |
                 sonar.projectKey=myapp
                 sonar.projectName=myapp
+                sonar.sources=java-cicd-project/spring-boot-app/src/main/java
+                sonar.tests=java-cicd-project/spring-boot-app/src/test/java
+                sonar.java.binaries=java-cicd-project/spring-boot-app/target/classes
           - task: Maven@4
             inputs:
               mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
