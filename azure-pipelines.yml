@@ -92,8 +92,8 @@ stages:
               --project "MyApp" \
               --scan . \
               --format "ALL" \
-              --out dependency-check-report
-              --disableAssembly
+              --out dependency-check-report \
+              --disableAssembly \
               --noupdate
             displayName: "Run OWASP Dependency-Check"
 
