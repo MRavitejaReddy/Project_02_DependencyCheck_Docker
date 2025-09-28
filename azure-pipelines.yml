@@ -93,8 +93,7 @@ stages:
                 --scan $(Build.SourcesDirectory) \
                 --format "ALL" \
                 --out $(Build.ArtifactStagingDirectory)/dependency-check-report \
-                --disableAssembly \
-                --noupdate
+                --disableAssembly 
             displayName: "Run OWASP Dependency-Check"
 
           - task: PublishBuildArtifacts@1
