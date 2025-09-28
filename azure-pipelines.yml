@@ -90,16 +90,16 @@ stages:
               mkdir -p $(Build.ArtifactStagingDirectory)/dependency-check-report
               ./depcheck/dependency-check/bin/dependency-check.sh \
                 --project "MyApp" \
-                --scan . \
+                --scan $(Build.SourcesDirectory) \
                 --format "ALL" \
-                --out dependency-check-report \
+                --out $(Build.ArtifactStagingDirectory)/dependency-check-report \
                 --disableAssembly \
                 --noupdate
             displayName: "Run OWASP Dependency-Check"
 
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: 'dependency-check-report'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/dependency-check-report'
               ArtifactName: 'dependency-check-report'
             displayName: "Publish Dependency-Check Report" 
   # =========================
