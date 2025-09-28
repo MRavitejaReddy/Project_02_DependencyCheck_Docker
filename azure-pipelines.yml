@@ -17,6 +17,8 @@ variables:
   imageRepository: 'myapp'
   containerRegistry: 'myregistry.azurecr.io'   # Replace with your ACR/Docker Hub registry
   dockerfilePath: 'Dockerfile'
+  NVD_API_KEY: $(NVD_API_KEY)
+
   tag: '$(Build.BuildId)'
 
 stages:
@@ -95,7 +97,8 @@ stages:
                 --out $(Build.ArtifactStagingDirectory)/dependency-check-report \
                 --disableAssembly \
                 --noupdate \
-                --data $(Build.SourcesDirectory)/.dependency-check
+                --data $(Build.SourcesDirectory)/.dependency-check \
+                --nvdApiKey $(NVD_API_KEY)
             displayName: "Run OWASP Dependency-Check"
 
           - task: PublishBuildArtifacts@1
