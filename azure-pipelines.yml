@@ -87,14 +87,14 @@ stages:
             displayName: "Run OWASP Dependency-Check"
           - script: |
               echo "Running Dependency-Check..."
-              mkdir -p dependency-check-report
+              mkdir -p $(Build.ArtifactStagingDirectory)/dependency-check-report
               ./depcheck/dependency-check/bin/dependency-check.sh \
-              --project "MyApp" \
-              --scan . \
-              --format "ALL" \
-              --out dependency-check-report \
-              --disableAssembly \
-              --noupdate
+                --project "MyApp" \
+                --scan . \
+                --format "ALL" \
+                --out dependency-check-report \
+                --disableAssembly \
+                --noupdate
             displayName: "Run OWASP Dependency-Check"
 
           - task: PublishBuildArtifacts@1
