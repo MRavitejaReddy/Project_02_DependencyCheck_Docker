@@ -46,7 +46,7 @@ stages:
       - job: SonarScan
         displayName: "SonarQube Analysis"
         steps:
-          - task: SonarQubePrepare@5
+          - task: SonarQubePrepare@6
             inputs:
               SonarQube: 'SonarQubeServiceConnection'   # Service connection in Azure DevOps
               scannerMode: 'Other'
@@ -61,7 +61,7 @@ stages:
             inputs:
               mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
               goals: 'verify sonar:sonar'
-          - task: SonarQubePublish@5
+          - task: SonarQubePublish@6
             inputs:
               pollingTimeoutSec: '300'
 
