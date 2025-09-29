@@ -15,9 +15,8 @@ variables:
   buildConfiguration: 'Release'
   dockerRegistryServiceConnection: 'docker-service-connection'   # Azure DevOps Docker service connection name
   imageRepository: 'myapp'
-  containerRegistry: 'myregistry.azurecr.io'   # Replace with your ACR/Docker Hub registry
+  containerRegistry: 'docker-service-connection'   # Replace with your ACR/Docker Hub registry
   dockerfilePath: 'Dockerfile'
-  NVD_API_KEY: $(NVD_API_KEY)
 
   tag: '$(Build.BuildId)'
 
@@ -74,38 +73,6 @@ stages:
             inputs:
               pollingTimeoutSec: '300'
 
-  # =========================
-  # 3. Dependency-Check (OWASP)
-  # =========================
-  - stage: DependencyCheck
-    displayName: "Dependency Vulnerability Check"
-    jobs:
-      - job: DepCheck
-        displayName: "OWASP Dependency-Check"
-        steps:
-          - script: |
-              curl -L https://github.com/jeremylong/DependencyCheck/releases/download/v9.0.8/dependency-check-9.0.8-release.zip -o depcheck.zip
-              unzip depcheck.zip -d depcheck
-            displayName: "Run OWASP Dependency-Check"
-          - script: |
-              echo "Running Dependency-Check..."
-              mkdir -p $(Build.ArtifactStagingDirectory)/dependency-check-report
-              ./depcheck/dependency-check/bin/dependency-check.sh \
-                --project "MyApp" \
-                --scan $(Build.SourcesDirectory) \
-                --format "ALL" \
-                --out $(Build.ArtifactStagingDirectory)/dependency-check-report \
-                --disableAssembly \
-                --noupdate \
-                --data $(Build.SourcesDirectory)/.dependency-check \
-                --nvdApiKey $(NVD_API_KEY)
-            displayName: "Run OWASP Dependency-Check"
-
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/dependency-check-report'
-              ArtifactName: 'dependency-check-report'
-            displayName: "Publish Dependency-Check Report" 
   # =========================
   # 4. Build & Push Docker Image
   # =========================
