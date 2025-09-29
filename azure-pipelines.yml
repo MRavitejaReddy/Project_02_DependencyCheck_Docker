@@ -16,7 +16,7 @@ variables:
   dockerRegistryServiceConnection: 'docker-service-connection'   # Azure DevOps Docker service connection name
   imageRepository: 'myapp'
   containerRegistry: 'docker-service-connection'   # Replace with your ACR/Docker Hub registry
-  dockerfilePath: 'Dockerfile'
+  dockerfilePath: 'java-cicd-project/spring-boot-app/Dockerfile'
 
   tag: '$(Build.BuildId)'
 
