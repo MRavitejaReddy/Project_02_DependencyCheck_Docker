@@ -74,9 +74,9 @@ stages:
               pollingTimeoutSec: '300'
           - task: Maven@4
             displayName: "Maven Build JAR for Docker"
-              inputs:
-                mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
-                goals: 'package -DskipTests'
+            inputs:
+              mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
+              goals: 'package -DskipTests'
 
   # =========================
   # 4. Build & Push Docker Image
