@@ -78,7 +78,6 @@ stages:
   # =========================
   - stage: DockerBuild
     displayName: "Build & Push Docker Image"
-    dependsOn: DependencyCheck
     jobs:
       - job: Docker
         steps:
