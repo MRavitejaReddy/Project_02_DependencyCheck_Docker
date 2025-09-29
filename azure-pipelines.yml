@@ -77,6 +77,10 @@ stages:
             inputs:
               mavenPomFile: 'java-cicd-project/spring-boot-app/pom.xml'
               goals: 'package -DskipTests'
+          - script: |
+              echo "Listing target folder contents:"
+              ls -l java-cicd-project/spring-boot-app/target/
+            displayName: "Show built JAR"
 
   # =========================
   # 4. Build & Push Docker Image
