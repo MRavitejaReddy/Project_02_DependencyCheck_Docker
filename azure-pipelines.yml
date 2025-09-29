@@ -93,10 +93,11 @@ stages:
     jobs:
       - job: Docker
         steps:
-         # Download the JAR artifact from the Build stage
+          # Download the JAR artifact from the Build stage
           - download: current
             artifact: springBootJar
             path: 'java-cicd-project/spring-boot-app/target'
+            
           - task: Docker@2
             inputs:
               containerRegistry: '$(dockerRegistryServiceConnection)'
