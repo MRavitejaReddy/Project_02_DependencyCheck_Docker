@@ -81,6 +81,9 @@ stages:
               echo "Listing target folder contents:"
               ls -l java-cicd-project/spring-boot-app/target/
             displayName: "Show built JAR"
+            # Publish the built JAR as an artifact for later stages
+          - publish: 'java-cicd-project/spring-boot-app/target/spring-boot-web.jar'
+            artifact: springBootJar
 
   # =========================
   # 4. Build & Push Docker Image
@@ -90,6 +93,10 @@ stages:
     jobs:
       - job: Docker
         steps:
+         # Download the JAR artifact from the Build stage
+          - download: current
+            artifact: springBootJar
+            path: 'java-cicd-project/spring-boot-app/target'
           - task: Docker@2
             inputs:
               containerRegistry: '$(dockerRegistryServiceConnection)'
@@ -97,6 +104,7 @@ stages:
               command: 'buildAndPush'
               dockerfile: '$(dockerfilePath)'
               buildContext: 'java-cicd-project/spring-boot-app'
+              arguments: '--build-arg springBootJar=spring-boot-web.jar'
               tags: |
                 $(tag)
 
