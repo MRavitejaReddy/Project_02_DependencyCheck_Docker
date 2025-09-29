@@ -92,6 +92,7 @@ stages:
               repository: '$(imageRepository)'
               command: 'buildAndPush'
               dockerfile: '$(dockerfilePath)'
+              buildContext: 'java-cicd-project/spring-boot-app'
               tags: |
                 $(tag)
 
